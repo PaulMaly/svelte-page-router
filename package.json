@@ -31,6 +31,7 @@
     },
     "homepage": "https://github.com/PaulMaly/svelte-page-router#readme",
     "devDependencies": {
+		"babel-eslint": "latest",
         "eslint": "latest",
         "eslint-plugin-import": "latest",
         "rollup": "latest"

@@ -1,0 +1,41 @@
+{
+    "name": "svelte-page-router",
+    "version": "1.0.0",
+    "description": "Simple wrapper based on pagejs to make DX similar to config-based router.",
+    "main": "index.js",
+    "module": "index.mjs",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rollup -c",
+        "prepublish": "npm run lint && npm run build",
+        "lint": "eslint src"
+    },
+    "files": [
+        "index.js",
+        "index.mjs"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PaulMaly/svelte-page-router.git"
+    },
+    "keywords": [
+        "svelte",
+        "routing",
+        "router",
+        "pagejs"
+    ],
+    "author": "PaulMaly",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/PaulMaly/svelte-page-router/issues"
+    },
+    "homepage": "https://github.com/PaulMaly/svelte-page-router#readme",
+    "devDependencies": {
+        "eslint": "latest",
+        "eslint-plugin-import": "latest",
+        "rollup": "latest"
+	},
+	"dependencies": {
+		"page": "latest"
+	}
+}

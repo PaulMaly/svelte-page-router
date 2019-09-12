@@ -1,6 +1,6 @@
 {
     "name": "svelte-page-router",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Simple wrapper based on pagejs to make DX similar to config-based router.",
     "main": "index.js",
     "module": "index.mjs",
@@ -31,12 +31,12 @@
     },
     "homepage": "https://github.com/PaulMaly/svelte-page-router#readme",
     "devDependencies": {
-		"babel-eslint": "latest",
+        "babel-eslint": "latest",
         "eslint": "latest",
         "eslint-plugin-import": "latest",
         "rollup": "latest"
-	},
-	"dependencies": {
-		"page": "latest"
-	}
+    },
+    "dependencies": {
+        "page": "latest"
+    }
 }

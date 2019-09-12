@@ -20,7 +20,7 @@ export default class {
 				query[key] = decodeURIComponent(val);
 				return query;
 			}, {});
-            
+
 			Promise.all(this._hooks.map(p => p(ctx))).then(next);
 		});
 	}
@@ -60,10 +60,11 @@ export default class {
 			typeof before === 'function' && callbacks.push(before);
 
 			callbacks.push((ctx, next) => {
+				typeof component === 'function' && (component = component(ctx));
 				ctx.handled = true; // it's important for redirects
 				Promise.resolve(component).then(component => {
-					(component.preload ? 
-						component.preload(ctx) : 
+					(component.preload ?
+						component.preload(ctx) :
 						Promise.resolve()
 					).then((state = {}) => {
 						Object.assign(ctx.state, state);
@@ -84,10 +85,10 @@ export default class {
 
 		typeof this._after === 'function' && page('*', this._after);
 		typeof this._exit === 'function' && page.exit('*', this._exit);
-       
+
 		page.start(this._options);
 	}
-    
+
 	stop() {
 		page.stop();
 	}

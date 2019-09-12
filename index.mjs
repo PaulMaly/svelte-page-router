@@ -2,107 +2,110 @@ import page from 'page';
 
 class index {
 
-    constructor({ routes = [], hooks = [], ...options }) {
+	constructor({ routes = [], hooks = [], ...options }) {
 
-        this._routes = routes;
-        this._hooks = hooks;
-        this._options = options;
+		this._routes = routes;
+		this._hooks = hooks;
+		this._options = options;
 
-        this._before = null;
-        this._enter = null;
-        this._after = null;
-        this._exit = null;
+		this._before = null;
+		this._enter = null;
+		this._after = null;
+		this._exit = null;
 
-        page('*', (ctx, next) => {
-            const qs = ctx.querystring ? ctx.querystring.replace('?', '').split('&') : [];
-            ctx.query = qs.reduce((query, param) => {
-                let [key, val] = param.split('=');
-                query[key] = decodeURIComponent(val);
-                return query;
-            }, {});
-            
-            Promise.all(this._hooks.map(p => p(ctx))).then(next);
-        });
-    }
+		page('*', (ctx, next) => {
+			const qs = ctx.querystring ? ctx.querystring.replace('?', '').split('&') : [];
+			ctx.query = qs.reduce((query, param) => {
+				const [key, val] = param.split('=');
+				query[key] = decodeURIComponent(val);
+				return query;
+			}, {});
 
-    base(path) {
-        page.base(path);
-    }
+			Promise.all(this._hooks.map(p => p(ctx))).then(next);
+		});
+	}
 
-    strict(enable) {
-        page.strict(enable);
-    }
+	base(path) {
+		page.base(path);
+	}
 
-    before(callback) {
-        typeof callback === 'function' && (this._before = callback);
-    }
+	strict(enable) {
+		page.strict(enable);
+	}
 
-    enter(callback) {
-        typeof callback === 'function' && (this._enter = callback);
-    }
+	before(callback) {
+		typeof callback === 'function' && (this._before = callback);
+	}
 
-    after(callback) {
-        typeof callback === 'function' && (this._after = callback);
-    }
+	enter(callback) {
+		typeof callback === 'function' && (this._enter = callback);
+	}
 
-    exit(callback) {
-        typeof callback === 'function' && (this._exit = callback);
-    }
+	after(callback) {
+		typeof callback === 'function' && (this._after = callback);
+	}
 
-    start() {
+	exit(callback) {
+		typeof callback === 'function' && (this._exit = callback);
+	}
 
-        typeof this._before === 'function' && page('*', this._before);
+	start() {
 
-        this._routes.forEach(({ path, before, after, exit, component }) => {
+		typeof this._before === 'function' && page('*', this._before);
 
-            let callbacks = [];
+		this._routes.forEach(({ path, before, after, exit, component }) => {
 
-            typeof before === 'function' && callbacks.push(before);
+			const callbacks = [];
 
-            callbacks.push((ctx, next) => {
-                ctx.handled = true; // it's important for redirects
-                Promise.resolve(component).then(component => {
-                    (component.preload ? 
-                        component.preload(ctx) : 
-                        Promise.resolve()
-                    ).then((state = {}) => {
-                        Object.assign(ctx.state, state);
-                        ctx.save();
-                        ctx.component = component.default || component;
-                        return next();
-                    });
-                });
-            });
+			typeof before === 'function' && callbacks.push(before);
 
-            typeof this._enter === 'function' && callbacks.push(this._enter);
-            typeof after === 'function' && callbacks.push(after);
+			callbacks.push((ctx, next) => {
+				typeof component === 'function' && (component = component(ctx));
 
-            page(path, ...callbacks);
+				ctx.handled = true; // it's important for redirects
 
-            typeof exit === 'function' && page.exit(path, exit);
-        });
+				Promise.resolve(component).then(component => {
+					(component.preload ?
+						component.preload(ctx) :
+						Promise.resolve()
+					).then((state = {}) => {
+						Object.assign(ctx.state, state);
+						ctx.save();
+						ctx.component = component.default || component;
+						return next();
+					});
+				});
+			});
 
-        typeof this._after === 'function' && page('*', this._after);
-        typeof this._exit === 'function' && page.exit('*', this._exit);
-       
-        page.start(this._options);
-    }
-    
-    stop() {
-        page.stop();
-    }
+			typeof this._enter === 'function' && callbacks.push(this._enter);
+			typeof after === 'function' && callbacks.push(after);
 
-    show(...args) {
-        page.show(...args);
-    }
+			page(path, ...callbacks);
 
-    redirect(...args) {
-        page.redirect(...args);
-    }
+			typeof exit === 'function' && page.exit(path, exit);
+		});
 
-    back(...args) {
-        page.back(...args);
-    }
+		typeof this._after === 'function' && page('*', this._after);
+		typeof this._exit === 'function' && page.exit('*', this._exit);
+
+		page.start(this._options);
+	}
+
+	stop() {
+		page.stop();
+	}
+
+	show(...args) {
+		page.show(...args);
+	}
+
+	redirect(...args) {
+		page.redirect(...args);
+	}
+
+	back(...args) {
+		page.back(...args);
+	}
 }
 
 export default index;

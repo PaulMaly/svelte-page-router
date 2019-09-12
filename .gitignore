@@ -2,5 +2,3 @@
 Thumbs.db
 node_modules
 *.log
-./index.js
-./index.mjs

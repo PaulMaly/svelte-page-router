@@ -30,7 +30,7 @@ const router = new Router({
 		component: import('./pages/Static')
 	},{
 		path: '/dynamic/:id/:type?',
-		component: import('~/pages/Dynamic')
+		component: ctx => import('~/pages/Dynamic') // for lazy-loaded routes
 	},{
 		path: '/secure',
 		component: import('~/pages/Secure'),
@@ -76,7 +76,7 @@ Switch pages in `App.svelte`:
 
 ```html
 <svelte:component 
-	this={component} 
+	this={component || Loading} 
 	{...state} 
 	{pathname} 
 	{path} 
@@ -86,6 +86,8 @@ Switch pages in `App.svelte`:
 />
 
 <script>
+	import Loading from './Loading.svelte';
+
 	export let component = null,
 		pathname = '',
 		path = '',
